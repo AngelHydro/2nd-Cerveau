@@ -1,0 +1,288 @@
+/* Rendu des notes, calqué sur la vue lecture d'Obsidian avec le thème Things. */
+.markdown {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text);
+  overflow-wrap: break-word;
+}
+
+.markdown > :first-child {
+  margin-top: 0;
+}
+
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4,
+.markdown h5,
+.markdown h6 {
+  line-height: 1.3;
+  font-weight: 700;
+  margin: 1.6em 0 0.6em;
+  scroll-margin-top: 80px;
+}
+.markdown h1 { font-size: 1.7rem; }
+.markdown h1.duplicate-title { display: none; }
+.markdown h2 { font-size: 1.5rem; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+.markdown h3 { font-size: 1.2rem; color: var(--blue); }
+.markdown h4 { font-size: 1.1rem; color: var(--yellow); }
+.markdown h5 { font-size: 1rem; color: var(--red); }
+.markdown h6 { font-size: 0.9rem; color: var(--text-muted); }
+
+.markdown p,
+.markdown ul,
+.markdown ol,
+.markdown .table-wrap {
+  margin: 0.75em 0;
+}
+
+.markdown strong,
+.markdown em {
+  color: var(--pink);
+}
+.markdown mark strong,
+.markdown mark em {
+  color: var(--text);
+}
+
+.markdown mark {
+  background: var(--highlight);
+  color: var(--text);
+  border-radius: 3px;
+  padding: 0 2px;
+}
+
+.markdown ul,
+.markdown ol {
+  padding-left: 1.6em;
+}
+.markdown li {
+  margin: 0.2em 0;
+}
+.markdown li::marker {
+  color: var(--text-faint);
+}
+
+.markdown hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 2.2em 0;
+}
+
+.markdown a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-color: hsla(215, 75%, 70%, 0.35);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.15s;
+}
+.markdown a:hover {
+  text-decoration-color: var(--accent);
+}
+.markdown a.external-link::after {
+  content: "↗";
+  font-size: 0.75em;
+  margin-left: 2px;
+  opacity: 0.6;
+}
+.markdown .is-unresolved {
+  color: var(--text-muted);
+  opacity: 0.7;
+  border-bottom: 1px dashed var(--text-faint);
+  cursor: help;
+}
+
+.markdown .tag {
+  display: inline-block;
+  font-size: 0.85em;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: #1d694b;
+  color: #fff;
+}
+
+.markdown blockquote {
+  margin: 1em 0;
+  padding: 2px 0 2px 16px;
+  border-left: 2px solid var(--green);
+  color: var(--green);
+  font-style: italic;
+}
+
+.markdown code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  background: var(--bg-code);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+.markdown pre {
+  background: var(--bg-code);
+  border-radius: 8px;
+  padding: 14px 16px;
+  overflow-x: auto;
+  line-height: 1.5;
+}
+.markdown pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.85em;
+}
+
+.markdown .table-wrap {
+  overflow-x: auto;
+}
+.markdown table {
+  border-collapse: collapse;
+  min-width: 60%;
+  font-size: 0.94em;
+}
+.markdown th,
+.markdown td {
+  border: 1px solid var(--border);
+  padding: 7px 12px;
+  text-align: left;
+  vertical-align: top;
+}
+.markdown th {
+  background: var(--bg-raised);
+  font-weight: 600;
+}
+
+.markdown img,
+.markdown .embed-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
+.markdown .embed-pdf {
+  width: 100%;
+  height: 72vh;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+}
+.markdown .file-link::before {
+  content: "⎘ ";
+}
+
+.markdown .katex {
+  font-size: 1.05em;
+}
+.markdown .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 4px 0;
+}
+
+.markdown pre.mermaid {
+  background: transparent;
+  text-align: center;
+  color: var(--text-faint);
+}
+.markdown pre.mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
+
+.markdown .footnotes {
+  margin-top: 2.5em;
+  font-size: 0.88em;
+  color: var(--text-muted);
+}
+.markdown .footnotes-sep {
+  margin: 2.5em 0 1em;
+}
+.markdown .footnote-ref a,
+.markdown .footnote-backref {
+  text-decoration: none;
+}
+
+/* --- Encadrés (callouts) --- */
+.markdown .callout {
+  --callout-rgb: 2, 122, 255;
+  --callout-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20h9'/%3E%3Cpath d='M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z'/%3E%3C/svg%3E");
+  margin: 1.1em 0;
+  padding: 12px 16px;
+  border-radius: 6px;
+  background: rgba(var(--callout-rgb), 0.1);
+  font-style: normal;
+  color: var(--text);
+}
+.markdown .callout-title {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-weight: 600;
+  color: rgb(var(--callout-rgb));
+  list-style: none;
+}
+.markdown summary.callout-title {
+  cursor: pointer;
+}
+.markdown summary.callout-title::-webkit-details-marker {
+  display: none;
+}
+.markdown summary.callout-title::after {
+  content: "›";
+  margin-left: auto;
+  transition: transform 0.15s;
+}
+.markdown details[open] > summary.callout-title::after {
+  transform: rotate(90deg);
+}
+.markdown .callout-title-inner p {
+  margin: 0;
+}
+.markdown .callout-icon {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 3px;
+  background: rgb(var(--callout-rgb));
+  -webkit-mask: var(--callout-icon) center / contain no-repeat;
+  mask: var(--callout-icon) center / contain no-repeat;
+}
+.markdown .callout-content > :first-child {
+  margin-top: 0.5em;
+}
+.markdown .callout-content > :last-child {
+  margin-bottom: 0;
+}
+
+.markdown .callout[data-callout="ai"] {
+  --callout-rgb: 158, 134, 200;
+  --callout-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z'/%3E%3C/svg%3E");
+}
+.markdown .callout[data-callout="ai"] .callout-title-inner {
+  font-weight: 500;
+  font-size: 0.92em;
+}
+.markdown .callout:is([data-callout="warning"], [data-callout="attention"], [data-callout="caution"]) {
+  --callout-rgb: 233, 151, 63;
+  --callout-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m21.7 18-8-14a2 2 0 0 0-3.4 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3Z'/%3E%3Cpath d='M12 9v4'/%3E%3Cpath d='M12 17h.01'/%3E%3C/svg%3E");
+}
+.markdown .callout:is([data-callout="example"]) {
+  --callout-rgb: 168, 130, 255;
+  --callout-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01'/%3E%3C/svg%3E");
+}
+.markdown .callout:is([data-callout="tip"], [data-callout="hint"], [data-callout="important"], [data-callout="abstract"], [data-callout="summary"], [data-callout="tldr"]) {
+  --callout-rgb: 83, 223, 221;
+  --callout-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.4-.5-2-1-3-1.1-2.1-.2-4 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.2.4-2.3 1-3.2.4 1.2 1.3 2.2 2.5 2.7Z'/%3E%3C/svg%3E");
+}
+.markdown .callout:is([data-callout="quote"], [data-callout="cite"]) {
+  --callout-rgb: 158, 158, 158;
+  --callout-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 21c3 0 7-1 7-8V5c0-1.3-.8-2-2-2H4c-1.3 0-2 .8-2 2v6c0 1.1.8 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 0-1 1v3c0 1 0 1 1 1Zm12 0c3 0 7-1 7-8V5c0-1.3-.8-2-2-2h-4c-1.3 0-2 .8-2 2v6c0 1.1.8 2 2 2h.8c0 2.3-.3 4-2.8 4v3c0 1 0 1 1 1Z'/%3E%3C/svg%3E");
+}
+.markdown .callout:is([data-callout="info"], [data-callout="todo"], [data-callout="note"]) {
+  --callout-rgb: 2, 122, 255;
+}
+.markdown .callout:is([data-callout="success"], [data-callout="check"], [data-callout="done"]) {
+  --callout-rgb: 68, 207, 110;
+}
+.markdown .callout:is([data-callout="question"], [data-callout="help"], [data-callout="faq"]) {
+  --callout-rgb: 224, 172, 0;
+}
+.markdown .callout:is([data-callout="danger"], [data-callout="error"], [data-callout="failure"], [data-callout="bug"]) {
+  --callout-rgb: 251, 70, 76;
+}

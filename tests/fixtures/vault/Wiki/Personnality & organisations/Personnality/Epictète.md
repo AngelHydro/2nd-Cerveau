@@ -1,0 +1,3 @@
+# Épictète
+
+Philosophe du [[Stoïcisme]].

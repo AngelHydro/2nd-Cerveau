@@ -1,0 +1,5 @@
+{ "colorGroups": [
+  { "query": "path:\"Wiki/Concepts\"", "color": { "a": 1, "rgb": 3047666 } },
+  { "query": "path:\"Wiki/Personnality & organisations/Personnality\"", "color": { "a": 1, "rgb": 16745138 } },
+  { "query": "tag:#ignoré", "color": { "a": 1, "rgb": 0 } }
+] }

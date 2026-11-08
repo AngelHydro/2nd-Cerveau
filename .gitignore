@@ -1,0 +1,7 @@
+node_modules/
+web/dist/
+cache/
+*.log
+logs/
+# Configuration personnelle (chemin du coffre) : voir config.example.json
+config.json
