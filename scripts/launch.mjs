@@ -1,4 +1,4 @@
-// Lanceur du Second Cerveau, sans terminal (via « Second Cerveau.vbs ») :
+// Lanceur du Second Cerveau, sans terminal (via « Second Cerveau.vbs » sous Windows, « Second Cerveau.app » sur Mac) :
 //  - icône du bureau : s'assure que le serveur tourne, puis ouvre la fenêtre de l'application ;
 //  - `--serveur` (démarrage de Windows) : prépare seulement le serveur, qui reste prêt en arrière-plan.
 // La fenêtre est l'application installée dans Firefox ou Brave (icône propre dans la barre des tâches,
@@ -115,10 +115,34 @@ function openWindow() {
   spawn(brave, args, { detached: true, stdio: "ignore" }).unref();
 }
 
+/**
+ * macOS : l'application Safari (« Fichier › Ajouter au Dock ») si elle existe, sinon le navigateur
+ * choisi (`"browser"` dans config.json : "firefox" ou "safari"), sinon Firefox s'il est installé,
+ * sinon le navigateur par défaut.
+ */
+function openWindowMac() {
+  const home = process.env.HOME ?? "";
+  // Les applications web de Safari portent un identifiant « com.apple.Safari.WebApp… » : on les distingue
+  // ainsi du lanceur « Second Cerveau.app » du projet, qui porte le même nom.
+  const safariApp = [path.join(home, "Applications", "Second Cerveau.app"), path.join(home, "Applications", "Safari", "Second Cerveau.app")].find((app) => {
+    const plist = path.join(app, "Contents", "Info.plist");
+    return existsSync(plist) && readFileSync(plist, "utf8").includes("com.apple.Safari.WebApp");
+  });
+  const firefox = ["/Applications/Firefox.app", path.join(home, "Applications", "Firefox.app")].find(existsSync);
+  const choice = cfg.browser?.toLowerCase();
+  let args;
+  if (safariApp && choice !== "firefox") args = [safariApp];
+  else if (choice === "safari") args = ["-a", "Safari", url];
+  else if (firefox) args = ["-a", firefox, url];
+  else args = [url];
+  log(`Ouverture : open ${args.join(" ")}`);
+  spawn("open", args, { detached: true, stdio: "ignore" }).unref();
+}
+
 try {
   prepare();
   await startServer();
-  if (!process.argv.includes("--serveur")) openWindow();
+  if (!process.argv.includes("--serveur")) (process.platform === "darwin" ? openWindowMac : openWindow)();
 } catch (err) {
   log(err instanceof Error ? err.message : String(err));
   process.exitCode = 1;

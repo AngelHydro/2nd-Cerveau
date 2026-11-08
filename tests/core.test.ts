@@ -1,4 +1,4 @@
-import { mkdtempSync, rmSync } from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -220,6 +220,24 @@ describe("coffre d'exemple", () => {
   it("répond au lanceur de l'icône du bureau", async () => {
     const res = await server.app.inject({ url: "/api/ping" });
     expect(res.json()).toEqual({ ok: true });
+  });
+});
+
+describe("noms de fichiers en Unicode décomposé (macOS)", () => {
+  it("donne les mêmes identifiants qu'avec des accents composés", async () => {
+    const dir = mkdtempSync(path.join(os.tmpdir(), "second-cerveau-nfd-"));
+    const concepts = path.join(dir, "Wiki", "Concépts".normalize("NFD"));
+    mkdirSync(concepts, { recursive: true });
+    writeFileSync(path.join(concepts, "Stoïcisme.md"), "Voir [[Épictète]].");
+    writeFileSync(path.join(concepts, "Épictète".normalize("NFD") + ".md"), "Philosophe.");
+    try {
+      const { buildVault } = await import("../server/vault.ts");
+      const vault = await buildVault(path.join(dir, "Wiki"));
+      expect([...vault.notes.keys()].sort()).toEqual(["Concépts/Stoïcisme", "Concépts/Épictète"].map((s) => s.normalize("NFC")).sort());
+      expect(vault.edges).toEqual([["Concépts/Stoïcisme", "Concépts/Épictète"]]);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 });
 

@@ -1,0 +1,20 @@
+#!/bin/bash
+# Lanceur macOS du Second Cerveau, sans terminal : tout le travail se fait dans scripts/launch.mjs.
+# L'application doit rester dans le dossier du projet (glisse-la dans le Dock depuis ce dossier).
+# (Pour voir le serveur tourner dans un terminal, utiliser plutôt « Second Cerveau.command ».)
+root="$(cd "$(dirname "$0")/../../.." && pwd)"
+cd "$root" || exit 1
+
+# Une application lancée depuis le Finder ne voit pas le PATH du terminal : on ajoute les emplacements
+# habituels de Node (Homebrew, installateur officiel, nvm).
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+[ -s "$HOME/.nvm/nvm.sh" ] && . "$HOME/.nvm/nvm.sh" >/dev/null 2>&1
+
+if ! command -v node >/dev/null 2>&1; then
+  osascript -e 'display alert "Second Cerveau" message "Node.js est introuvable : installe-le depuis nodejs.org." as warning'
+  exit 1
+fi
+if ! node scripts/launch.mjs "$@"; then
+  osascript -e "display alert \"Le Second Cerveau n'a pas pu démarrer.\" message \"Détails : $root/logs/lanceur.log\" as warning"
+  exit 1
+fi

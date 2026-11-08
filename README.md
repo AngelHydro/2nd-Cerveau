@@ -21,6 +21,7 @@ Dans `config.json`, renseigne :
 | `wikiDir` | Sous-dossier indexé, relatif au coffre (`Wiki` par défaut) |
 | `host` | `127.0.0.1` : cet ordinateur seulement ; `0.0.0.0` : aussi les appareils du réseau local (téléphone), **sans mot de passe** |
 | `port` | Port du serveur (`4321` par défaut) |
+| `browser` | *Mac, facultatif* : `"firefox"` ou `"safari"` pour choisir le navigateur qu'ouvre `Second Cerveau.app` |
 
 Les variables d'environnement `SC_VAULT`, `SC_HOST` et `SC_PORT` remplacent ces valeurs sans modifier le fichier.
 
@@ -43,6 +44,19 @@ Puis ouvre <http://localhost:4321>. Le serveur surveille le coffre : l'interface
 - `Second Cerveau.vbs` lance le serveur sans fenêtre de terminal et ouvre l'application. Avec `/serveur`, il prépare seulement le serveur ; place-le dans le dossier *Démarrage* pour qu'il soit prêt à l'ouverture de session. Les journaux vont dans `logs/`.
 - `Second Cerveau.bat` fait la même chose dans un terminal, pratique pour déboguer.
 - Installée comme application web (Firefox ou Brave), l'interface a sa propre icône dans la barre des tâches.
+
+### Mac
+
+- **`Second Cerveau.app`** (double-clic) : démarre le serveur sans terminal, puis ouvre l'interface. Pour l'avoir dans le **Dock**, glisse-la dans le Dock **depuis le dossier du projet**. Elle doit rester dans ce dossier : ne la déplace pas dans *Applications*.
+  - Au premier lancement, macOS peut la bloquer, car elle n'est pas signée. Fais alors *clic droit › Ouvrir*, une seule fois.
+  - Le navigateur ouvert est, dans l'ordre :
+    1. l'application Safari, si tu l'as créée (*Fichier › Ajouter au Dock* sur la page, macOS 14 et plus) ;
+    2. sinon, le navigateur choisi par `browser` ;
+    3. sinon, Firefox s'il est installé ;
+    4. sinon, le navigateur par défaut.
+  - Le serveur reste ensuite prêt en arrière-plan. Les journaux vont dans `logs/`.
+- **`Second Cerveau.command`** (double-clic) : la même chose dans une fenêtre Terminal, pratique pour déboguer. Ferme la fenêtre pour arrêter le serveur.
+- Node.js est cherché dans les emplacements habituels : Homebrew, l'installateur officiel et nvm.
 
 ## Organisation du coffre
 

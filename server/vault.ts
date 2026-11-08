@@ -49,15 +49,18 @@ export interface Vault {
 
 export type Resolved = { kind: "note"; id: string } | { kind: "file"; relPath: string } | null;
 
-const toPosix = (p: string) => p.split(path.sep).join("/");
-
-async function walk(dir: string, rel = ""): Promise<string[]> {
-  const out: string[] = [];
+/**
+ * Fichiers du dossier : `rel` sert d'identifiant, `disk` à ouvrir le fichier. macOS peut rendre les accents
+ * décomposés (« e » + « ́ ») : `rel` les recompose pour que les identifiants soient les mêmes partout.
+ */
+async function walk(dir: string, rel = ""): Promise<Array<{ rel: string; disk: string }>> {
+  const out: Array<{ rel: string; disk: string }> = [];
   for (const entry of await fs.readdir(dir, { withFileTypes: true })) {
     if (entry.name.startsWith(".")) continue;
-    const childRel = rel ? `${rel}/${entry.name}` : entry.name;
-    if (entry.isDirectory()) out.push(...(await walk(path.join(dir, entry.name), childRel)));
-    else if (entry.isFile()) out.push(childRel);
+    const disk = path.join(dir, entry.name);
+    const childRel = rel ? `${rel}/${entry.name.normalize("NFC")}` : entry.name.normalize("NFC");
+    if (entry.isDirectory()) out.push(...(await walk(disk, childRel)));
+    else if (entry.isFile()) out.push({ rel: childRel, disk });
   }
   return out;
 }
@@ -89,8 +92,8 @@ function asList(value: unknown): string[] {
   return [];
 }
 
-async function readNote(wikiRoot: string, relPath: string): Promise<Note> {
-  const raw = await fs.readFile(path.join(wikiRoot, relPath), "utf8");
+async function readNote(diskPath: string, relPath: string): Promise<Note> {
+  const raw = await fs.readFile(diskPath, "utf8");
   let body = raw;
   let data: Record<string, unknown> = {};
   let frontmatterError: string | undefined;
@@ -148,12 +151,12 @@ export async function buildVault(wikiRoot: string): Promise<Vault> {
   const files = await walk(wikiRoot);
   const notes = new Map<string, Note>();
   const attachments = new Map<string, string>();
-  const mdFiles: string[] = [];
-  for (const rel of files.map(toPosix)) {
-    if (/\.md$/i.test(rel)) mdFiles.push(rel);
-    else attachments.set(nameKey(rel.split("/").pop()!), rel);
+  const mdFiles: typeof files = [];
+  for (const file of files) {
+    if (/\.md$/i.test(file.rel)) mdFiles.push(file);
+    else attachments.set(nameKey(file.rel.split("/").pop()!), file.rel);
   }
-  const parsed = await Promise.all(mdFiles.map((rel) => readNote(wikiRoot, rel)));
+  const parsed = await Promise.all(mdFiles.map((f) => readNote(f.disk, f.rel)));
   const byName = new Map<string, string[]>();
   for (const note of parsed) {
     notes.set(note.id, note);
