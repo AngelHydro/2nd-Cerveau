@@ -304,7 +304,8 @@
         const pf = cubicOut(pathFade);
         const onPath = shownPath?.has(node) ?? false;
         const hoverDim = focus && f > 0 && node !== focus && !focusNeighbors.has(node) ? 0.72 * f : 0;
-        const spotDim = spot && s > 0 && node !== spot && !spotNeighbors.has(node) ? 0.72 * s * (1 - pf) : 0;
+        // Le survol remplace la mise en avant de la note ouverte (sinon deux voisinages s'allument).
+        const spotDim = spot && s > 0 && node !== spot && !spotNeighbors.has(node) ? 0.72 * s * (1 - pf) * (1 - f) : 0;
         const pathDim = shownPath && pf > 0 && !onPath ? 0.8 * pf : 0;
         const dim = Math.max(hoverDim, spotDim, pathDim);
         if (dim > 0) Object.assign(res, { color: mixColor(attrs.color, BG, dim), label: "", zIndex: 0 });
@@ -328,7 +329,7 @@
         // Les liens de la note survolée ou ouverte s'allument ; les autres s'estompent.
         const f = cubicOut(fade);
         const pf = cubicOut(pathFade);
-        const sp = cubicOut(spotFade) * (1 - pf);
+        const sp = cubicOut(spotFade) * (1 - pf) * (1 - f);
         const onPath = pathEdges.has(edgeKey(s, t));
         const hot = Math.max(focus && (s === focus || t === focus) ? f : 0, spot && (s === spot || t === spot) ? sp : 0, onPath ? pf : 0);
         const dim = Math.max(

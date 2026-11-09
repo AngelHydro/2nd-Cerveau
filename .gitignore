@@ -5,3 +5,4 @@ cache/
 logs/
 # Configuration personnelle (chemin du coffre) : voir config.example.json
 config.json
+.DS_Store
